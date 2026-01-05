@@ -1,0 +1,20 @@
+# Prerequisiti C
+*.d
+*.o
+*.obj
+*.elf
+
+# Eseguibili (assumendo che non abbiano estensione su Linux/Mac)
+# Se usi una convenzione specifica, aggiungila qui.
+# Esempio: main, app, ecc.
+*.out
+*.exe
+
+# Cartelle di build
+build/
+bin/
+
+# File di sistema e editor
+.DS_Store
+.swp
+*~
