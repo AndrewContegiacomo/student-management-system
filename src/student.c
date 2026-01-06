@@ -25,7 +25,6 @@ void addStudent() {
     }
 
     // Edit File
-    //
     fprintf(fp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
 
     // Close
