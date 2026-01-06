@@ -6,7 +6,7 @@ void addStudent() {
     Student s;
     FILE *fp;
 
-    // 1. Input Data
+    // Input Data
     printf("Enter Roll Number (ID): ");
     scanf("%d", &s.roll_number);
     
@@ -16,7 +16,7 @@ void addStudent() {
     printf("Enter Grade: ");
     scanf("%f", &s.grade);
 
-    // 2. Open File
+    // Open File
     fp = fopen(FILE_NAME, "a"); 
 
     if (fp == NULL) {
@@ -24,22 +24,21 @@ void addStudent() {
         return;
     }
 
-    // 3. Edit File
+    // Edit File
     //
     fprintf(fp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
 
-    // 4. Close
+    // Close
     printf("Student added successfully!\n");
     fclose(fp);
 }
 
 // Placeholder implementation for viewing students
 void viewStudents() {
-    void viewStudents() {
     Student s;
     FILE *fp;
 
-    // 1. OPEN FILE IN READ MODE
+    //Open File Read Mode
     fp = fopen(FILE_NAME, "r");
 
     if (fp == NULL) {
@@ -52,7 +51,7 @@ void viewStudents() {
     printf("%-10s %-20s %-10s\n", "Roll No", "Name", "Grade");
     printf("------------------------------------------\n");
 
-    // 2. READ LOOP
+    // Read Loop
     while (fscanf(fp, "%d %s %f", &s.roll_number, s.name, &s.grade) != EOF) {
         
         // Print the current record formatted to the screen
@@ -60,16 +59,106 @@ void viewStudents() {
     }
 
     printf("------------------------------------------\n");
-    // 3. CLOSE FILE
+    // Close File
     fclose(fp);
 }
 
-// Placeholder implementation for updating a student
 void updateStudent() {
-    printf("\n[DEBUG] Function updateStudent called.\n");
+    Student s;
+    FILE *fp, *tempFp;
+    int id_to_change;
+    int found = 0;
+
+    printf("Enter Roll Number to change: ");
+    scanf("%d", &id_to_change);
+
+    //Open original file (Read) and temp file (Write)
+    fp = fopen(FILE_NAME, "r");
+    tempFp = fopen("temp.txt", "w");
+
+    if (fp == NULL || tempFp == NULL) {
+        printf("Error opening files.\n");
+        if (fp) fclose(fp); // Close fp if it was opened successfully
+        return;
+    }
+
+    // Copy all students EXCEPT the one to delete
+    while (fscanf(fp, "%d %s %f", &s.roll_number, s.name, &s.grade) != EOF) {
+        if (s.roll_number != id_to_change) {
+            fprintf(tempFp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
+        } else {
+            
+            printf("Current Information:\n");
+            printf("%d %s %.2f\n", s.roll_number, s.name, s.grade);
+
+            printf("Enter new Roll Number (ID): ");
+            scanf("%d", &s.roll_number);
+    
+            printf("Enter new Name (single word): ");
+            scanf("%s", s.name); 
+    
+            printf("Enter new Grade: ");
+            scanf("%f", &s.grade);
+
+            fprintf(tempFp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
+            found = 1; // Mark as found, skip writing to temp file
+        }
+    }
+
+    // Close files to release locks
+    fclose(fp);
+    fclose(tempFp);
+
+    // Replace original file with the updated temp file
+    if (found) {
+        remove(FILE_NAME);            // Delete old file
+        rename("temp.txt", FILE_NAME); // Rename temp to original name
+        printf("Success! Student with ID %d has been updated.\n", id_to_change);
+    } else {
+        remove("temp.txt");           // Delete unused temp file
+        printf("Student with ID %d not found.\n", id_to_change);
+    }
 }
 
-// Placeholder implementation for deleting a student
-void deleteStudent() {
-    printf("\n[DEBUG] Function deleteStudent called.\n");
+void deleteStudent(){
+    Student s;
+    FILE *fp, *tempFp;
+    int id_to_delete;
+    int found = 0;
+
+    printf("Enter Roll Number to delete: ");
+    scanf("%d", &id_to_delete);
+
+    //Open original file (Read) and temp file (Write)
+    fp = fopen(FILE_NAME, "r");
+    tempFp = fopen("temp.txt", "w");
+
+    if (fp == NULL || tempFp == NULL) {
+        printf("Error opening files.\n");
+        if (fp) fclose(fp); // Close fp if it was opened successfully
+        return;
+    }
+
+    // Copy all students EXCEPT the one to delete
+    while (fscanf(fp, "%d %s %f", &s.roll_number, s.name, &s.grade) != EOF) {
+        if (s.roll_number != id_to_delete) {
+            fprintf(tempFp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
+        } else {
+            found = 1; // Mark as found, skip writing to temp file
+        }
+    }
+
+    // Close files to release locks
+    fclose(fp);
+    fclose(tempFp);
+
+    // Replace original file with the updated temp file
+    if (found) {
+        remove(FILE_NAME);            // Delete old file
+        rename("temp.txt", FILE_NAME); // Rename temp to original name
+        printf("Success! Student with ID %d has been deleted.\n", id_to_delete);
+    } else {
+        remove("temp.txt");           // Delete unused temp file
+        printf("Student with ID %d not found.\n", id_to_delete);
+    }
 }
