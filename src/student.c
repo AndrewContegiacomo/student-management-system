@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "../include/student.h" // Include the local header
 
-// Placeholder implementation for adding a student
 void addStudent() {
     Student s;
     FILE *fp;
@@ -32,7 +31,6 @@ void addStudent() {
     fclose(fp);
 }
 
-// Placeholder implementation for viewing students
 void viewStudents() {
     Student s;
     FILE *fp;
@@ -81,7 +79,7 @@ void updateStudent() {
         return;
     }
 
-    // Copy all students EXCEPT the one to delete
+    // Copy all students and upddate
     while (fscanf(fp, "%d %s %f", &s.roll_number, s.name, &s.grade) != EOF) {
         if (s.roll_number != id_to_change) {
             fprintf(tempFp, "%d %s %.2f\n", s.roll_number, s.name, s.grade);
